@@ -1,28 +1,35 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 import api from '../api';
-
-const Login = ({ setToken }) => {
+const AuthForm = ({ setToken }) => {
+  const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [staySignedIn, setStaySignedIn] = useState(false);
+  const [formError, setFormError] = useState('');
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormError('');
+    
     try {
-      const response = await api.post('/auth/login', { username, password });
-      const { token } = response.data;
-      setToken(token);
-      alert('Inicio de sesión exitoso');
+      if (isLogin) {
+        const response = await api.post('/auth/login', { username, password });
+        const { token } = response.data;
+        setToken(token);
+        alert('Inicio de sesión exitoso');
+      } else {
+        await api.post('/auth/register', { username, password });
+        alert('Registro exitoso');
+        setIsLogin(true); // Cambiar a login después de registro exitoso
+      }
     } catch (error) {
       console.error(error);
-      alert('Error al iniciar sesión');
+      setFormError(isLogin ? 'Error al iniciar sesión' : 'Error al registrar');
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 flex items-center justify-center px-4 py-12 perspective-1000">
-      <div className="w-full max-w-md space-y-8 transform-gpu transition-all duration-300 hover:translate-y-[-10px] ">
+      <div className="w-full max-w-md space-y-8 transform-gpu transition-all duration-300 hover:translate-y-[-10px]">
         <div className="bg-zinc-900/90 backdrop-blur-sm p-8 rounded-2xl shadow-[0_20px_70px_-15px_rgba(30,215,96,0.3)] hover:shadow-[0_30px_100px_-20px_rgba(30,215,96,0.4)] transition-all duration-300">
           {/* Logo */}
           <div className="flex justify-center transform transition-transform duration-300 hover:scale-110">
@@ -34,26 +41,36 @@ const Login = ({ setToken }) => {
             </svg>
           </div>
 
-          {/* Login Form */}
-          <form onSubmit={handleLogin} className="mt-8 space-y-6">
-            {/* Sign In/Up Tabs */}
+          {/* Form Container */}
+          <div className="relative mt-8">
+            {/* Auth Toggle */}
             <div className="flex justify-center space-x-4 text-sm mb-8">
               <button 
                 type="button"
-                className="text-white border-b-2 border-green-500 pb-1 font-semibold transition-all duration-300 hover:text-green-400"
+                onClick={() => setIsLogin(true)}
+                className={`pb-1 font-semibold transition-all duration-300 ${
+                  isLogin 
+                    ? 'text-white border-b-2 border-green-500' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
               >
                 SIGN IN
               </button>
               <button 
                 type="button"
-                className="text-gray-400 hover:text-white transition-all duration-300"
+                onClick={() => setIsLogin(false)}
+                className={`pb-1 font-semibold transition-all duration-300 ${
+                  !isLogin 
+                    ? 'text-white border-b-2 border-green-500' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
               >
                 SIGN UP
               </button>
             </div>
 
-            <div className="space-y-4">
-              {/* Username Input */}
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="transform transition-all duration-200 hover:translate-x-1">
                 <input
                   type="text"
@@ -64,7 +81,6 @@ const Login = ({ setToken }) => {
                 />
               </div>
 
-              {/* Password Input */}
               <div className="transform transition-all duration-200 hover:translate-x-1">
                 <input
                   type="password"
@@ -75,39 +91,44 @@ const Login = ({ setToken }) => {
                 />
               </div>
 
-              {/* Stay Signed In Checkbox */}
-              <div className="flex items-center transform transition-all duration-200 hover:translate-x-1">
-                <input
-                  type="checkbox"
-                  checked={staySignedIn}
-                  onChange={(e) => setStaySignedIn(e.target.checked)}
-                  className="w-4 h-4 text-green-500 bg-zinc-800 rounded border-gray-600 focus:ring-green-500"
-                />
-                <label className="ml-2 text-sm text-gray-400">
-                  stay signed in
-                </label>
-              </div>
+              {isLogin && (
+                <div className="flex items-center transform transition-all duration-200 hover:translate-x-1">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 text-green-500 bg-zinc-800 rounded border-gray-600 focus:ring-green-500"
+                  />
+                  <label className="ml-2 text-sm text-gray-400">
+                    stay signed in
+                  </label>
+                </div>
+              )}
 
-              {/* Sign In Button */}
+              {formError && (
+                <div className="text-red-500 text-sm text-center">
+                  {formError}
+                </div>
+              )}
+
               <button
                 type="submit"
                 className="w-full py-3 bg-green-500 text-white rounded-md hover:bg-green-400 transform transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg hover:shadow-green-500/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
               >
-                SIGN IN
+                {isLogin ? 'SIGN IN' : 'SIGN UP'}
               </button>
 
-              {/* Forgot Password Link */}
-              <div className="text-center transform transition-all duration-200 hover:translate-y-[-2px]">
-                <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">
-                  Forgot Password?
-                </a>
-              </div>
-            </div>
-          </form>
+              {isLogin && (
+                <div className="text-center transform transition-all duration-200 hover:translate-y-[-2px]">
+                  {/* <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">
+                    Forgot Password?
+                  </a> */}
+                </div>
+              )}
+            </form>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default AuthForm;
