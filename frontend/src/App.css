@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+body.dark {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+  
+  body.dark a {
+    color: #ffffff;
+  }
+  
+  body.dark a:hover {
+    color: #cccccc;
+  }
