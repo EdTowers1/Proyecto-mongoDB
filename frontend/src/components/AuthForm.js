@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { toast, Toaster } from 'react-hot-toast';
 import api from '../api';
+
 const AuthForm = ({ setToken }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
@@ -15,14 +17,19 @@ const AuthForm = ({ setToken }) => {
         const response = await api.post('/auth/login', { username, password });
         const { token } = response.data;
         setToken(token);
-        alert('Inicio de sesión exitoso');
+        toast.success('Inicio de sesión exitoso');
       } else {
         await api.post('/auth/register', { username, password });
-        alert('Registro exitoso');
+        toast.success('Registro exitoso');
         setIsLogin(true); // Cambiar a login después de registro exitoso
       }
     } catch (error) {
       console.error(error);
+      if (isLogin) {
+        toast.error('Error al iniciar sesión');
+      } else {
+        toast.error('Error al registrar');
+      }
       setFormError(isLogin ? 'Error al iniciar sesión' : 'Error al registrar');
     }
   };
@@ -127,6 +134,7 @@ const AuthForm = ({ setToken }) => {
           </div>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 };
