@@ -9,6 +9,7 @@ const Home = ({ token }) => {
   const [opinion, setOpinion] = useState("");
   const [rating, setRating] = useState(1);
   const [searchTerm, setSearchTerm] = useState(""); // Estado para el término de búsqueda
+  const [reviews, setReviews] = useState([]); // Estado para las reseñas
 
   useEffect(() => {
     const fetchSongs = async () => {
@@ -29,7 +30,6 @@ const Home = ({ token }) => {
   const filteredSongs = songs.filter((song) =>
     song.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   const handleReviewSubmit = async (songId) => {
     try {
       await api.post(
@@ -37,16 +37,17 @@ const Home = ({ token }) => {
         { opinion, rating },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      alert("Reseña agregada");
-      setOpinion("");
+      alert('Reseña agregada');
+      setReviews([...reviews, { songId, opinion, rating }]); // Añade la nueva reseña al estado
+      setOpinion('');
       setRating(1);
       setSelectedSong(null);
     } catch (error) {
       console.error(error);
-      alert("Error al agregar reseña");
+      alert('Error al agregar reseña');
     }
   };
-
+  
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-gray-300">
@@ -130,29 +131,35 @@ const Home = ({ token }) => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredSongs.map((song) => (
-              <div
-                key={song._id}
-                className="border border-gray-300 rounded overflow-hidden"
-              >
-                <img
-                  src={song.cover || "https://via.placeholder.com/400"}
-                  alt={song.title}
-                  className="w-full aspect-square object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="font-semibold mb-1">{song.title}</h3>
-                  <p className="text-sm text-gray-500 mb-3">{song.artist}</p>
-                  <button
-                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded bg-white"
-                    onClick={() => setSelectedSong(song)}
-                  >
-                    Agregar Reseña
-                  </button>
-                </div>
-              </div>
-            ))}
+          {filteredSongs.map((song) => (
+  <div key={song._id} className="border border-gray-300 rounded overflow-hidden">
+    <img
+      src={song.cover || 'https://via.placeholder.com/400'}
+      alt={song.title}
+      className="w-full aspect-square object-cover"
+    />
+    <div className="p-4">
+      <h3 className="font-semibold mb-1">{song.title}</h3>
+      <p className="text-sm text-gray-500 mb-3">{song.artist}</p>
+      <button
+        className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded bg-white"
+        onClick={() => setSelectedSong(song)}
+      >
+        Agregar Reseña
+      </button>
+      <div className="mt-4">
+        <h4 className="font-semibold">Reseñas:</h4>
+        {reviews.filter(review => review.songId === song._id).map((review, index) => (
+          <div key={index} className="mt-2">
+            <p className="text-sm">{review.opinion}</p>
+            <p className="text-sm text-gray-500">Rating: {review.rating}</p>
           </div>
+        ))}
+      </div>
+    </div>
+  </div>
+))}
+
 
           {selectedSong && (
             <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded shadow-lg max-w-md w-full">
@@ -190,6 +197,7 @@ const Home = ({ token }) => {
               </div>
             </div>
           )}
+        </div>
         </div>
       </main>
     </div>
