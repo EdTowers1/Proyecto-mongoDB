@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api';
 import styled from '@emotion/styled';
-import { Search, Music4, Star, ChevronDown } from 'lucide-react';
+import { Search, Music4, Star} from 'lucide-react';
 import MusicFormModal from './MusicFormModal';
 
 const Header = styled.header`
@@ -39,17 +39,17 @@ const Card = styled.div`
   overflow: hidden;
 `;
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
+// const style = {
+//   position: 'absolute',
+//   top: '50%',
+//   left: '50%',
+//   transform: 'translate(-50%, -50%)',
+//   width: 400,
+//   bgcolor: 'background.paper',
+//   border: '2px solid #000',
+//   boxShadow: 24,
+//   p: 4,
+// };
 
 
 
@@ -65,17 +65,20 @@ const Home = ({ token }) => {
 
 
   useEffect(() => {
-    const fetchSongs = async () => {
-      try {
-        const response = await api.get('/music');
-        setSongs(response.data);
-        setFilteredSongs(response.data); // Inicializa las canciones filtradas con todas
-      } catch (error) {
-        console.error(error);
-      }
-    };
+    
     fetchSongs();
+
   }, []);
+
+  const fetchSongs = async () => {
+    try {
+      const response = await api.get('/music');
+      setSongs(response.data);
+      setFilteredSongs(response.data); // Inicializa las canciones filtradas con todas
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     // Filtra las canciones basándote en el término de búsqueda
@@ -105,6 +108,7 @@ const Home = ({ token }) => {
   // Filtrar canciones basadas en el género y el artista
   useEffect(() => {
     let filtered = songs;
+    fetchSongs();
 
     if (selectedGenre) {
       filtered = filtered.filter((song) =>
@@ -127,6 +131,8 @@ const Home = ({ token }) => {
 
   // Filtrar canciones basadas en el artista seleccionado
   useEffect(() => {
+    fetchSongs();
+
     if (selectedArtist) {
       const filtered = songs.filter((song) =>
         song.artist.toLowerCase().includes(selectedArtist.toLowerCase()) // Filtra por artista

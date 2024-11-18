@@ -57,6 +57,7 @@ const MusicFormModal = () => {
                 const data = await response.json();
                 console.log('Music added:', data);
                 handleClose(); // Cierra el modal después de agregar la música
+                
             } else {
                 console.error('Error adding music:', response.statusText);
             }
