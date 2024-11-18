@@ -1,11 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 import api from '../api';
+import { useNavigate } from 'react-router-dom';
+
 
 const Login = ({ setToken }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [staySignedIn, setStaySignedIn] = useState(false);
+  const navigate = useNavigate(); // Inicializamos el hook
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -14,6 +17,7 @@ const Login = ({ setToken }) => {
       const { token } = response.data;
       setToken(token);
       alert('Inicio de sesión exitoso');
+      navigate('/home');
     } catch (error) {
       console.error(error);
       alert('Error al iniciar sesión');

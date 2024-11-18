@@ -4,6 +4,9 @@ import api from '../api';
 import styled from '@emotion/styled';
 import { Search, Music4, Star} from 'lucide-react';
 import MusicFormModal from './MusicFormModal';
+import { useNavigate } from 'react-router-dom';
+import ReactAudioPlayer from 'react-audio-player';
+
 
 const Header = styled.header`
   border-bottom: 1px solid #e5e5e5;
@@ -62,6 +65,7 @@ const Home = ({ token }) => {
   const [filteredSongs, setFilteredSongs] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState('');
   const [selectedArtist, setSelectedArtist] = useState('');
+  const navigate = useNavigate(); // Inicializamos el hook
 
 
   useEffect(() => {
@@ -104,11 +108,12 @@ const Home = ({ token }) => {
       alert('Error al agregar reseña');
     }
   };
+  
 
   // Filtrar canciones basadas en el género y el artista
   useEffect(() => {
     let filtered = songs;
-    fetchSongs();
+    // fetchSongs();
 
     if (selectedGenre) {
       filtered = filtered.filter((song) =>
@@ -131,7 +136,7 @@ const Home = ({ token }) => {
 
   // Filtrar canciones basadas en el artista seleccionado
   useEffect(() => {
-    fetchSongs();
+    // fetchSongs();
 
     if (selectedArtist) {
       const filtered = songs.filter((song) =>
@@ -145,6 +150,10 @@ const Home = ({ token }) => {
 
   // Obtener lista única de artistas
   const uniqueArtists = [...new Set(songs.map((song) => song.artist))];
+
+  const cerrarSesion = () => {
+    navigate('/')
+  } 
 
 
 
@@ -167,7 +176,7 @@ const Home = ({ token }) => {
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ fontSize: '0.875rem' }}>Premium Member ⭐</span>
-              <div style={{ width: '2rem', height: '2rem', borderRadius: '50%', backgroundColor: '#e5e5e5' }}></div>
+              <div onClick={cerrarSesion}  style={{ width: '2rem', height: '2rem', borderRadius: '50%', backgroundColor: '#e5e5e5' }}></div>
             </div>
           </div>
         </Container>
@@ -210,13 +219,17 @@ const Home = ({ token }) => {
               <Button key={index} onClick={() => setSelectedGenre(genre)}>{genre}</Button>
             ))}
             {/* modal agregar cancion */}
-            <MusicFormModal />
+            <MusicFormModal onSongAdded={fetchSongs}/>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem' }}>
             {filteredSongs.map((song) => (
               <Card key={song._id}>
-                <img src={song.cover || 'https://via.placeholder.com/400'} alt={song.title} style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover' }} />
+                <img src={song.image} alt={song.title} style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover' }} />
+                <ReactAudioPlayer
+                src={song.audio}
+                   controls
+                      />
                 <div style={{ padding: '1rem' }}>
                   <h3 style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{song.title}</h3>
                   <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.75rem' }}>{song.artist}</p>

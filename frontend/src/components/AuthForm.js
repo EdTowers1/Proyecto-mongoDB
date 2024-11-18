@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
 import api from '../api';
+import { useNavigate } from 'react-router-dom';
 
 const AuthForm = ({ setToken }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [formError, setFormError] = useState('');
+  const navigate = useNavigate(); // Inicializamos el hook
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +20,7 @@ const AuthForm = ({ setToken }) => {
         const { token } = response.data;
         setToken(token);
         toast.success('Inicio de sesión exitoso');
+        navigate('/home');
       } else {
         await api.post('/auth/register', { username, password });
         toast.success('Registro exitoso');

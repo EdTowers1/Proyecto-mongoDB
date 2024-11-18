@@ -14,7 +14,7 @@ const style = {
     p: 4,
   };
 
-const MusicFormModal = () => {
+const MusicFormModal = ({ onSongAdded }) => {
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState({
         title: '',
@@ -22,6 +22,7 @@ const MusicFormModal = () => {
         genre: '',
         releaseYear: '',
         image: '',
+        audio: '',
     });
 
     const handleOpen = () => setOpen(true);
@@ -56,6 +57,8 @@ const MusicFormModal = () => {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Music added:', data);
+                onSongAdded();
+
                 handleClose(); // Cierra el modal después de agregar la música
                 
             } else {
@@ -132,18 +135,27 @@ const MusicFormModal = () => {
                 fullWidth
                 margin="normal"
               />
+              <TextField
+                label="audio"
+                name="audio"
+                value={formData.audio}
+                onChange={handleChange}
+                type="text"
+                fullWidth
+                margin="normal"
+              />
               <label style={{ display: 'block', margin: '16px 0 8px' }}>
               Upload Image:
             </label>
-            <input
-              type="text"
-              name="image"
-            //   onChange={handleFileChange}
-              style={{
-                display: 'block',
-                marginBottom: '16px',
-              }}
-            />
+            <TextField
+                label="Imagen"
+                name="image"
+                value={formData.image}
+                onChange={handleChange}
+                type="text"
+                fullWidth
+                margin="normal"
+              />
               <button
                 type="submit"
                 style={{
