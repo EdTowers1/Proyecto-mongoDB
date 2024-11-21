@@ -6,6 +6,7 @@ import { Search, Music4, Star} from 'lucide-react';
 import MusicFormModal from './MusicFormModal';
 import { useNavigate } from 'react-router-dom';
 import ReactAudioPlayer from 'react-audio-player';
+import LatestReviews from './LatestReviews';
 
 
 const Header = styled.header`
@@ -94,11 +95,8 @@ const Home = ({ token }) => {
 
   const handleReviewSubmit = async (songId) => {
     try {
-      await api.post(
-        `/music/${songId}/review`,
-        { opinion, rating },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.post(`/music/resena/${songId}/review`,
+        { opinion, rating }      );
       alert('Reseña agregada');
       setOpinion('');
       setRating(1);
@@ -108,6 +106,7 @@ const Home = ({ token }) => {
       alert('Error al agregar reseña');
     }
   };
+  
   
 
   // Filtrar canciones basadas en el género y el artista
@@ -168,10 +167,10 @@ const Home = ({ token }) => {
                 <span className="sr-only">Sony Music</span>
               </a>
               <nav style={{ display: 'none', alignItems: 'center', gap: '1.5rem' }}>
-                <a href="#" style={{ fontSize: '0.875rem', fontWeight: '500' }}>Home</a>
-                <a href="#" style={{ fontSize: '0.875rem', fontWeight: '500' }}>Musics</a>
-                <a href="#" style={{ fontSize: '0.875rem', fontWeight: '500' }}>Premium</a>
-                <a href="#" style={{ fontSize: '0.875rem', fontWeight: '500' }}>Contact</a>
+                    {/* <a href="#" style={{ fontSize: '0.875rem', fontWeight: '500' }}>Home</a>
+                    <a href="#" style={{ fontSize: '0.875rem', fontWeight: '500' }}>Musics</a>
+                    <a href="#" style={{ fontSize: '0.875rem', fontWeight: '500' }}>Premium</a>
+                    <a href="#" style={{ fontSize: '0.875rem', fontWeight: '500' }}>Contact</a> */}
               </nav>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -267,6 +266,7 @@ const Home = ({ token }) => {
               </div>
             </div>
           )}
+          <LatestReviews />
         </Container>
       </main>
     </div>

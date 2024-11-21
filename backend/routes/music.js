@@ -80,11 +80,11 @@ router.get('/', async (req, res) => {
 });
 
 // Ruta para agregar una reseña a una canción (requiere autenticación)
-router.post('/:id/review', authMiddleware, async (req, res) => {
+router.post('/resena/:_id/review', async (req, res) => {
   const { opinion, rating } = req.body;
 
   try {
-    const song = await Music.findById(req.params.id);
+    const song = await Music.findById(req.params._id);
     if (!song) return res.status(404).json({ message: "Canción no encontrada" });
 
     const review = { user: req.userId, opinion, rating };
