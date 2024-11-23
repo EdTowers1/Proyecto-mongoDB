@@ -58,7 +58,8 @@ const MusicWithReviews = forwardRef((props, ref) => {
 <div className="music-with-reviews-container p-4 bg-white text-black min-h-screen">
   <div className="latest-reviews">
     <h2 className="text-xl font-bold mb-4">Últimas Reseñas</h2>
-    <div className="reviews-carousel overflow-x-auto flex flex-row gap-4 snap-x snap-mandatory scrollbar-hide">
+    {/* Se añade padding vertical y horizontal al carrusel */}
+    <div className="reviews-carousel overflow-x-auto flex flex-row gap-4 snap-x snap-mandatory scrollbar-hide px-6 py-4">
       {latestReviews.map((review) => {
         const maxStars = 5; // Número máximo de estrellas
         const fullStars = Math.floor(review.rating); // Estrellas completas
@@ -68,7 +69,7 @@ const MusicWithReviews = forwardRef((props, ref) => {
         return (
           <div
             key={review._id}
-            className="review-card bg-sky-200  p-4 rounded-lg w-[215px] h-[160px] flex-shrink-0 snap-center flex flex-col justify-between"
+            className="review-card bg-sky-200 p-4 rounded-lg min-w-[200px] max-w-[300px] max-h-[400px] flex-shrink-0 snap-center flex flex-col justify-between overflow-hidden shadow-md"
           >
             {/* Título y Artista */}
             <div>
@@ -99,18 +100,18 @@ const MusicWithReviews = forwardRef((props, ref) => {
             </div>
 
             {/* Opinión */}
-            <p className="text-base text-black mt-1 line-clamp-2">
+            <p className="text-sm text-black mt-2 line-clamp-3">
               {review.opinion}
             </p>
 
             {/* Reacciones y Fecha */}
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-4 flex-wrap">
               <div className="flex items-center space-x-2">
                 <motion.button
                   onClick={() =>
                     handleReactionClick(review.songId, review._id, 'like')
                   }
-                  className="flex items-center space-x-1 text-white"
+                  className="flex items-center space-x-1 text-black"
                   whileTap={{ scale: 1.2 }}
                   whileHover={{ scale: 1.1 }}
                 >
@@ -121,7 +122,7 @@ const MusicWithReviews = forwardRef((props, ref) => {
                   onClick={() =>
                     handleReactionClick(review.songId, review._id, 'dislike')
                   }
-                  className="flex items-center space-x-1 text-white"
+                  className="flex items-center space-x-1 text-black"
                   whileTap={{ scale: 1.2 }}
                   whileHover={{ scale: 1.1 }}
                 >
@@ -139,6 +140,9 @@ const MusicWithReviews = forwardRef((props, ref) => {
     </div>
   </div>
 </div>
+
+
+
 
   
   
