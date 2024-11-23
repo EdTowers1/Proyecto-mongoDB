@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Modal, TextField, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add'; // Importa el ícono desde el paquete correcto
+import { toast, Toaster } from 'react-hot-toast';
 
 
 const style = {
@@ -44,30 +45,39 @@ const MusicFormModal = ({ onSongAdded }) => {
     //   };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('http://localhost:3000/api/music/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Music added:', data);
-                onSongAdded();
-
-                handleClose(); // Cierra el modal después de agregar la música
-                
-            } else {
-                console.error('Error adding music:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
+      e.preventDefault();
+  
+      try {
+          const response = await fetch('http://localhost:3000/api/music/', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(formData),
+          });
+  
+          if (response.ok) {
+              const data = await response.json();
+              console.log('Music added:', data);
+  
+              // Mostrar notificación de éxito
+              toast.success('cancion añadida con Exito!');
+  
+              onSongAdded(); // Actualiza la lista de canciones
+              handleClose(); // Cierra el modal
+          } else {
+              console.error('Error adding music:', response.statusText);
+  
+              // Mostrar notificación de error
+              toast.error(`Failed to add music: ${response.statusText}`);
+          }
+      } catch (error) {
+          console.error('Error:', error);
+  
+          // Mostrar notificación de error genérico
+          toast.error('An unexpected error occurred.');
+      }
+  };
 
     return (
         <div>
@@ -173,6 +183,7 @@ const MusicFormModal = ({ onSongAdded }) => {
             </form>
           </Box>
         </Modal>
+        <Toaster />
       </div>
     );
 };

@@ -5,8 +5,8 @@ const authMiddleware = require('../middleware/auth');
 
 // Ruta para CREAR una nueva canción
 router.post('/', async (req, res) => {
-  const { title, artist, genre, releaseYear, image } = req.body;
-  const newMusic = new Music({ title, artist, genre, releaseYear, image });
+  const { title, artist, genre, releaseYear, image, audio } = req.body;
+  const newMusic = new Music({ title, artist, genre, releaseYear, image, audio });
 
   try {
     const savedMusic = await newMusic.save();
@@ -146,9 +146,9 @@ router.patch('/:songId/review/:reviewId', async (req, res) => {
 });
 
 // Incrementar contador de visitas de una canción o álbum
-router.patch('/:id/view', async (req, res) => {
+router.patch('/:_id/view', async (req, res) => {
   try {
-    const music = await Music.findById(req.params.id);
+    const music = await Music.findById(req.params._id);
     if (!music) return res.status(404).json({ message: "Canción no encontrada" });
 
     music.views += 1;

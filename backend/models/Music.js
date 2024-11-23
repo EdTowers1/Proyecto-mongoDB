@@ -15,6 +15,7 @@ const musicSchema = new mongoose.Schema({
   genre: { type: String, required: true },
   releaseYear: { type: Number, required: true },
   image: String,
+  audio: { type: String, required: true },
   reviews: [reviewSchema],
   views: { type: Number, default: 0 },
   averageRating: { type: Number, default: 0 }

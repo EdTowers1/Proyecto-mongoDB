@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // import Register from './components/Register';
-import Login from './components/Login';
+// import Login from './components/Login';
 import Home from './components/Home';
 import AuthForm from './components/AuthForm';
 import { Toaster } from 'react-hot-toast';
@@ -14,7 +14,7 @@ const App = () => {
         <>
         <AuthForm setToken={setToken} />
           {/* <Register /> */}
-          <Login setToken={setToken} />
+          {/* <Login setToken={setToken} /> */}
         </>
       ) : (
         <Home token={token} />

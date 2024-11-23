@@ -1,5 +1,5 @@
 // src/components/Home.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import api from '../api';
 import styled from '@emotion/styled';
 import { Search, Music4, Star} from 'lucide-react';
@@ -7,6 +7,7 @@ import MusicFormModal from './MusicFormModal';
 import { useNavigate } from 'react-router-dom';
 import ReactAudioPlayer from 'react-audio-player';
 import LatestReviews from './LatestReviews';
+import { toast, Toaster } from 'react-hot-toast';
 
 
 const Header = styled.header`
@@ -67,13 +68,26 @@ const Home = ({ token }) => {
   const [selectedGenre, setSelectedGenre] = useState('');
   const [selectedArtist, setSelectedArtist] = useState('');
   const navigate = useNavigate(); // Inicializamos el hook
+  const latestReviewsRef = useRef(null);
 
 
   useEffect(() => {
     
     fetchSongs();
+    
 
   }, []);
+
+  const handlePlaySong = async (songId) => {
+    try {
+      // Enviar una solicitud al backend para aumentar la cantidad de vistas de la canción
+      const response = await api.patch(`/music/${songId}/view`);
+      // console.log(response)
+      fetchSongs();
+    } catch (error) {
+      console.error("Error al aumentar las vistas de la canción:", error);
+    }
+  };
 
   const fetchSongs = async () => {
     try {
@@ -97,13 +111,16 @@ const Home = ({ token }) => {
     try {
       await api.post(`/music/resena/${songId}/review`,
         { opinion, rating }      );
-      alert('Reseña agregada');
+      toast.success('Reseña agregada');
       setOpinion('');
       setRating(1);
       setSelectedSong(null);
+      if (latestReviewsRef.current) {
+        latestReviewsRef.current.someChildMethod(); // Llamar al método del hijo
+      }
     } catch (error) {
       console.error(error);
-      alert('Error al agregar reseña');
+      toast.error('Error al agregar reseña');
     }
   };
   
@@ -225,13 +242,16 @@ const Home = ({ token }) => {
             {filteredSongs.map((song) => (
               <Card key={song._id}>
                 <img src={song.image} alt={song.title} style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover' }} />
+                {/* music player */}
                 <ReactAudioPlayer
                 src={song.audio}
                    controls
+                   onPlay={() => handlePlaySong(song._id)} // Llamar al backend para incrementar las vistas
                       />
                 <div style={{ padding: '1rem' }}>
                   <h3 style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{song.title}</h3>
                   <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.75rem' }}>{song.artist}</p>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.75rem' }}>Views {song.views}</p>
                   <Button onClick={() => setSelectedSong(song)}>
                     Agregar Reseña
                   </Button>
@@ -266,8 +286,9 @@ const Home = ({ token }) => {
               </div>
             </div>
           )}
-          <LatestReviews />
+         <LatestReviews ref={latestReviewsRef} />
         </Container>
+        <Toaster />
       </main>
     </div>
   );
