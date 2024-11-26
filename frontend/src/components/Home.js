@@ -171,9 +171,16 @@ const Home = ({ token }) => {
     navigate('/')
   } 
 
-
+//<div class="relative h-full w-full bg-neutral-900"><div class="absolute inset-0 bg-fuchsia-400 bg-[size:20px_20px] opacity-20 blur-[100px]"></div></div>
 
   return (
+    <div className="relative min-h-screen">
+    {/* Fondo encapsulado */}
+    <div className="absolute top-0 -z-10 h-full w-full bg-white">
+      <div className="absolute bottom-auto left-auto right-0 top-0 h-[500px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-[rgba(173,109,244,0.5)] opacity-50 blur-[80px]"></div>
+    </div>
+  
+    {/* Todo tu contenido existente */}
     <div className="min-h-screen bg-background">
       <Header>
         <Container>
@@ -183,24 +190,19 @@ const Home = ({ token }) => {
                 <Music4 size={32} color="#000" />
                 <span className="sr-only">Sony Music</span>
               </a>
-              <nav style={{ display: 'none', alignItems: 'center', gap: '1.5rem' }}>
-                    {/* <a href="#" style={{ fontSize: '0.875rem', fontWeight: '500' }}>Home</a>
-                    <a href="#" style={{ fontSize: '0.875rem', fontWeight: '500' }}>Musics</a>
-                    <a href="#" style={{ fontSize: '0.875rem', fontWeight: '500' }}>Premium</a>
-                    <a href="#" style={{ fontSize: '0.875rem', fontWeight: '500' }}>Contact</a> */}
-              </nav>
+              <nav style={{ display: 'none', alignItems: 'center', gap: '1.5rem' }}></nav>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <span style={{ fontSize: '0.875rem' }}>Premium Member ⭐</span>
-              <div onClick={cerrarSesion}  style={{ width: '2rem', height: '2rem', borderRadius: '50%', backgroundColor: '#e5e5e5' }}></div>
+              <div onClick={cerrarSesion} style={{ width: '2rem', height: '2rem', borderRadius: '50%', backgroundColor: '#e5e5e5' }}></div>
             </div>
           </div>
         </Container>
       </Header>
-
+  
       <main style={{ padding: '1.5rem 1rem' }}>
         <Container>
-
+          {/* Tu contenido existente */}
           <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
             <Search style={{ position: 'absolute', left: '0.75rem', top: '0.75rem', width: '1rem', height: '1rem', color: '#6b7280' }} />
             <Input
@@ -210,7 +212,6 @@ const Home = ({ token }) => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
             <select
               id="artist-select"
@@ -230,44 +231,58 @@ const Home = ({ token }) => {
                 </option>
               ))}
             </select>
-            {/* <Button onClick={() => setSelectedGenre('Pop')}>Pop</Button> */}
             {uniqueGeneros.map((genre, index) => (
-              <Button key={index} onClick={() => setSelectedGenre(genre)}>{genre}</Button>
+              <Button key={index} onClick={() => setSelectedGenre(genre)}>
+                {genre}
+              </Button>
             ))}
-            {/* modal agregar cancion */}
-            <MusicFormModal onSongAdded={fetchSongs}/>
+            <MusicFormModal onSongAdded={fetchSongs} />
           </div>
-
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem' }}>
             {filteredSongs.map((song) => (
               <Card key={song._id}>
                 <img src={song.image} alt={song.title} style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover' }} />
-                {/* music player */}
                 <ReactAudioPlayer
-                src={song.audio}
-                   controls
-                   onPlay={() => handlePlaySong(song._id)} // Llamar al backend para incrementar las vistas
-                      />
+                  src={song.audio}
+                  controls
+                  onPlay={() => handlePlaySong(song._id)} // Llamar al backend para incrementar las vistas
+                />
                 <div style={{ padding: '1rem' }}>
                   <h3 style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{song.title}</h3>
                   <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.75rem' }}>{song.artist}</p>
                   <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.75rem' }}>Views {song.views}</p>
-                  <Button onClick={() => setSelectedSong(song)}>
-                    Agregar Reseña
-                  </Button>
+                  <Button onClick={() => setSelectedSong(song)}>Agregar Reseña</Button>
                 </div>
               </Card>
             ))}
           </div>
-
           {selectedSong && (
-            <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundColor: 'white', padding: '2rem', borderRadius: '0.5rem', boxShadow: '0 0 10px rgba(0,0,0,0.1)', maxWidth: '400px', width: '100%' }}>
+            <div
+              style={{
+                position: 'fixed',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                backgroundColor: 'white',
+                padding: '2rem',
+                borderRadius: '0.5rem',
+                boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+                maxWidth: '400px',
+                width: '100%',
+              }}
+            >
               <h3 style={{ marginBottom: '1rem' }}>Agregar Reseña para {selectedSong.title}</h3>
               <textarea
                 placeholder="Tu opinión"
                 value={opinion}
                 onChange={(e) => setOpinion(e.target.value)}
-                style={{ width: '100%', marginBottom: '1rem', padding: '0.5rem', borderRadius: '0.25rem', border: '1px solid #e5e5e5' }}
+                style={{
+                  width: '100%',
+                  marginBottom: '1rem',
+                  padding: '0.5rem',
+                  borderRadius: '0.25rem',
+                  border: '1px solid #e5e5e5',
+                }}
               />
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                 <Star size={16} />
@@ -277,7 +292,12 @@ const Home = ({ token }) => {
                   min="1"
                   max="5"
                   onChange={(e) => setRating(e.target.value)}
-                  style={{ width: '3rem', padding: '0.25rem', borderRadius: '0.25rem', border: '1px solid #e5e5e5' }}
+                  style={{
+                    width: '3rem',
+                    padding: '0.25rem',
+                    borderRadius: '0.25rem',
+                    border: '1px solid #e5e5e5',
+                  }}
                 />
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -286,11 +306,15 @@ const Home = ({ token }) => {
               </div>
             </div>
           )}
-         <LatestReviews ref={latestReviewsRef} />
+          <LatestReviews ref={latestReviewsRef} />
         </Container>
         <Toaster />
       </main>
     </div>
+  </div>
+  
+  
+  
   );
 };
 
